@@ -66,12 +66,14 @@ namespace prjLocadora
             this.produtoraToolStripMenuItem.Name = "produtoraToolStripMenuItem";
             this.produtoraToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.produtoraToolStripMenuItem.Text = "Produtora";
+            this.produtoraToolStripMenuItem.Click += new System.EventHandler(this.produtoraToolStripMenuItem_Click);
             // 
             // filmeToolStripMenuItem
             // 
             this.filmeToolStripMenuItem.Name = "filmeToolStripMenuItem";
             this.filmeToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.filmeToolStripMenuItem.Text = "Filme";
+            this.filmeToolStripMenuItem.Click += new System.EventHandler(this.filmeToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
