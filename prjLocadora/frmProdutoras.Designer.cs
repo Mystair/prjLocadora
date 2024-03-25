@@ -140,6 +140,7 @@ namespace prjLocadora
             this.btnPrimeiro.TabIndex = 3;
             this.btnPrimeiro.Text = "<<";
             this.btnPrimeiro.UseVisualStyleBackColor = true;
+            this.btnPrimeiro.Click += new System.EventHandler(this.btnPrimeiro_Click);
             // 
             // btnAnterior
             // 
@@ -149,6 +150,7 @@ namespace prjLocadora
             this.btnAnterior.TabIndex = 4;
             this.btnAnterior.Text = "<";
             this.btnAnterior.UseVisualStyleBackColor = true;
+            this.btnAnterior.Click += new System.EventHandler(this.btnAnterior_Click);
             // 
             // btnProximo
             // 
@@ -158,6 +160,7 @@ namespace prjLocadora
             this.btnProximo.TabIndex = 5;
             this.btnProximo.Text = ">";
             this.btnProximo.UseVisualStyleBackColor = true;
+            this.btnProximo.Click += new System.EventHandler(this.btnProximo_Click);
             // 
             // btnUltimo
             // 
@@ -167,6 +170,7 @@ namespace prjLocadora
             this.btnUltimo.TabIndex = 6;
             this.btnUltimo.Text = ">>";
             this.btnUltimo.UseVisualStyleBackColor = true;
+            this.btnUltimo.Click += new System.EventHandler(this.btnUltimo_Click);
             // 
             // btnNovo
             // 

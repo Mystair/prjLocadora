@@ -13,11 +13,52 @@ namespace prjLocadora
 {
     public partial class frmProdutoras : Form
     {
+
+        int registroAtual = 0;
+        int totalRegistros = 0;
+        DataTable dtProdutoras = new DataTable();
         String connectionString = @"Server=darnassus\motorhead;Database=db_230578; User Id=230578; Password=siyg02pg";
         bool novo;
         public frmProdutoras()
         {
             InitializeComponent();
+        }
+
+        private void navegar() 
+        {
+            txtCodProd.Text = dtProdutoras.Rows[registroAtual][0].ToString();
+            txtProd.Text = dtProdutoras.Rows[registroAtual][1].ToString();
+            txtTelProd.Text = dtProdutoras.Rows[registroAtual][2].ToString();
+            txtEmailProd.Text = dtProdutoras.Rows[registroAtual][3].ToString();
+        }
+
+        private void carregar()
+        {
+            dtProdutoras = new DataTable();
+            string sql = "SELECT * FROM tblProdutora";
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand(sql, con);
+            cmd.CommandType = CommandType.Text;
+            SqlDataReader reader;
+            con.Open();
+            try
+            {
+                using (reader = cmd.ExecuteReader())
+                {
+                    dtProdutoras.Load(reader);
+                    totalRegistros = dtProdutoras.Rows.Count;
+                    registroAtual = 0;
+                    navegar();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro: " + ex.ToString());
+            }
+            finally
+            {
+                con.Close();
+            }
         }
 
         private void frmProdutoras_Load(object sender, EventArgs e)
@@ -35,13 +76,12 @@ namespace prjLocadora
             con.Open();
             try
             {
-                reader = cmd.ExecuteReader();
-                if (reader.Read())
+                using (reader = cmd.ExecuteReader())
                 {
-                    txtCodProd.Text = reader[0].ToString();
-                    txtProd.Text = reader[1].ToString();
-                    txtTelProd.Text = reader[2].ToString();
-                    txtEmailProd.Text = reader[3].ToString();
+                    dtProdutoras.Load(reader);
+                    totalRegistros = dtProdutoras.Rows.Count;
+                    registroAtual = 0;
+                    navegar();
                 }
             }
             catch(Exception ex)
@@ -61,12 +101,16 @@ namespace prjLocadora
             txtProd.Enabled = true;
             txtEmailProd.Enabled = true;
             txtTelProd.Enabled = true;
+            txtCodProd.Text = "";
+            txtProd.Text = "";
+            txtTelProd.Text = "";
+            txtEmailProd.Text = "";
             btnExcluir.Enabled = false;
             btnPrimeiro.Enabled = false;
             btnAnterior.Enabled = false;
             btnProximo.Enabled = false;
             btnUltimo.Enabled = false;
-            btnAnterior.Enabled = false;
+            //btnAnterior.Enabled = false;
             btnAlterar.Enabled = false;
             btnCancelar.Visible = true;
             novo = true;
@@ -129,34 +173,49 @@ namespace prjLocadora
             btnNovo.Enabled = true;
             btnAlterar.Enabled = true;
             btnExcluir.Enabled = true;
+            btnCancelar.Visible = false;
             txtCodProd.Enabled = false;
             txtEmailProd.Enabled = false;
             txtProd.Enabled = false;
             txtTelProd.Enabled = false;
+            btnPrimeiro.Enabled = true;
+            btnAnterior.Enabled = true;
+            btnProximo.Enabled = true;
+            btnUltimo.Enabled = true;
+            carregar();
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
         {
-            string sql = "DELETE FROM tblProdutora WHERE codProd=" + txtCodProd.Text;
-            SqlConnection con = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand(sql, con);
-            cmd.CommandType = CommandType.Text;
-            con.Open();
-            try
+            DialogResult confirma = MessageBox.Show("Deseja excluir essa produtora?", "Excluir Produtora?", MessageBoxButtons.YesNo);
+            if (confirma == DialogResult.Yes)
             {
-                int i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                string sql = "DELETE FROM tblProdutora WHERE codProd=" + txtCodProd.Text;
+                SqlConnection con = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand(sql, con);
+                cmd.CommandType = CommandType.Text;
+                con.Open();
+                try
                 {
-                    MessageBox.Show("Produtora deletada com sucesso!");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        MessageBox.Show("Produtora deletada com sucesso!");
+                    }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro: " + ex.ToString());
+                }
+                finally
+                {
+                    con.Close();
+                }
+                carregar();
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Erro: " + ex.ToString());
-            }
-            finally
-            {
-                con.Close();
+                carregar();
             }
         }
 
@@ -172,7 +231,11 @@ namespace prjLocadora
             txtEmailProd.Enabled = false;
             txtProd.Enabled = false;
             txtTelProd.Enabled = false;
-            
+            btnPrimeiro.Enabled = true;
+            btnAnterior.Enabled = true;
+            btnProximo.Enabled = true;
+            btnUltimo.Enabled = true;
+
         }
 
         private void btnAlterar_Click(object sender, EventArgs e)
@@ -181,9 +244,50 @@ namespace prjLocadora
             btnNovo.Enabled = false;
             btnExcluir.Enabled = false;
             btnSalvar.Enabled = true;
+            btnCancelar.Visible = true;
             txtProd.Enabled = true;
             txtTelProd.Enabled = true;
             txtEmailProd.Enabled = true;
+            btnPrimeiro.Enabled = false;
+            btnAnterior.Enabled = false;
+            btnProximo.Enabled = false;
+            btnUltimo.Enabled = false;
+        }
+
+        private void btnProximo_Click(object sender, EventArgs e)
+        {
+            if (registroAtual < totalRegistros - 1)
+            {
+                registroAtual++;
+                navegar();
+            }
+        }
+
+        private void btnAnterior_Click(object sender, EventArgs e)
+        {
+            if (registroAtual > 0)
+            {
+                registroAtual--;
+                navegar();
+            }
+        }
+
+        private void btnUltimo_Click(object sender, EventArgs e)
+        {
+            if (registroAtual < totalRegistros - 1)
+            {
+                registroAtual = totalRegistros - 1;
+                navegar();
+            }
+        }
+
+        private void btnPrimeiro_Click(object sender, EventArgs e)
+        {
+            if (registroAtual > 0)
+            {
+                registroAtual = 0;
+                navegar();
+            }
         }
     }
 }
